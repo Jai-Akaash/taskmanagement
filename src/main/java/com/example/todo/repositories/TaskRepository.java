@@ -29,7 +29,7 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
 
         List<Task> findByCreatedById(UUID userId);
 
-        // Use params instead of referencing enum classes in JPQL
+       
         @Query("SELECT t FROM Task t " +
                 "WHERE t.dueDate < CURRENT_DATE " +
                 "AND t.status <> :completed " +
@@ -37,7 +37,7 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
                 "ORDER BY t.dueDate ASC")
         List<Task> findOverdueTasks();
 
-        // Use FUNCTION('DATE', ...) to extract date from timestamp fields
+        
         @Query("SELECT t FROM Task t " +
                 "WHERE FUNCTION('DATE', t.createdAt) BETWEEN :startDate AND :endDate " +
                 "ORDER BY t.createdAt DESC")
@@ -57,9 +57,7 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
         List<Task> findCompletedTasksBetween(@Param("startDate") LocalDate startDate,
                                              @Param("endDate") LocalDate endDate);
 
-        // Native query corrected to use actual table/column names.
-        // NOTE: this assumes a separate task_tags table (task_id, tag). If your schema stores tags as JSON in tasks,
-        // you'll need a different approach (see entity notes below).
+      
         @Query(value = "SELECT DISTINCT t.* FROM tasks t " +
                 "LEFT JOIN task_tags tt ON t.task_id = tt.task_id " +
                 "WHERE tt.tag IN :tags " +
